@@ -1,0 +1,25 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.4.33213.308
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "bitmap_mod", "bitmap_mod\bitmap_mod.csproj", "{167385BA-2448-4237-988A-1B8BE881C191}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{167385BA-2448-4237-988A-1B8BE881C191}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{167385BA-2448-4237-988A-1B8BE881C191}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{167385BA-2448-4237-988A-1B8BE881C191}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{167385BA-2448-4237-988A-1B8BE881C191}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {6B449F1C-0717-4053-AB92-4B96EA439E0F}
+	EndGlobalSection
+EndGlobal
