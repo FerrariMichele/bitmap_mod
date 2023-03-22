@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Drawing;
-using System.Drawing.Imaging;
 using System.IO;
 namespace bitmap_mod
 {
@@ -9,52 +8,174 @@ namespace bitmap_mod
         static void Main(string[] args)
         {
             string input;
-            bool continua = false;
-            string path = @"mesi.bmp";
-            int width = 0, height = 0, offSet = 0, rowSize = 0;
-            Color[][] BitmapPixels = LoadBitmapPixels(path, ref width, ref height, ref offSet, ref rowSize);
+            bool continua = false, ending;
+            int redPerc, greenPerc, bluePerc;
+            float multiplier;
+            string path = @"rio.bmp", pathMod = @"rioMOD.bmp";
+            Color[][] BitmapPixels;
+            BitmapPixels = LoadBitmapPixels(path);
             do
             {
                 Console.WriteLine("Scelta:\n1 - BiancoNero\n2 - BiancoNero (2)\n3 - ChiaroScuro\n4 - ChiaroScuro (2)\n5 - Sfocatura\n6 - Gradiente Nero Orizzontale\n7 - Gradiente Bianco Verticale\n8 - Gradiente Diagonale\n9 - Contorno\n10 - Contrasto\n11 - Specchia Orizzontale\n12 - Specchia Verticale\n13 - Ruota di 180°\n14 - Merge\n15 - Uscita");
                 input = Console.ReadLine();
-                Console.Clear();
                 switch (input)
                 {
                     case "1":
+                        BiancoNero(BitmapPixels);
+                        SaveBitmap(pathMod, BitmapPixels);
                         break;
                     case "2":
+                        Console.Clear();
+                        Console.WriteLine("Percentuale di rosso: ");
+                        redPerc = int.Parse(Console.ReadLine());
+                        Console.WriteLine("Percentuale di verde: ");
+                        greenPerc = int.Parse(Console.ReadLine());
+                        Console.WriteLine("Percentuale di blu: ");
+                        bluePerc = int.Parse(Console.ReadLine());
+                        ending = BiancoNeroPerc(redPerc, greenPerc, bluePerc, BitmapPixels);
+                        if (!ending) 
+                        {
+                            Console.WriteLine("Percentuali non valide");
+                        }
+                        else
+                        {
+                            SaveBitmap(pathMod, BitmapPixels);
+                        }
                         break;
                     case "3":
+                        Console.Clear(); 
+                        Console.WriteLine("Indice di schiarimento k (-255 < k < 255): ");
+                        int index = int.Parse(Console.ReadLine());
+                        ending = ChiaroScuro(index, BitmapPixels);
+                        if (!ending)
+                        {
+                            Console.WriteLine("Valore dell'indice non consentito");
+                        }
+                        else
+                        {
+                            SaveBitmap(pathMod, BitmapPixels);
+                        }
                         break;
                     case "4":
+                        Console.Clear();
+                        Console.WriteLine("Indice moltplicatore k (0 <= k <= 2): ");
+                        multiplier = float.Parse(Console.ReadLine());
+                        ending = ChiaroScuroMult(multiplier, BitmapPixels);
+                        if (!ending)
+                        {
+                            Console.WriteLine("Valore dell'indice non consentito");
+                        }
+                        else
+                        {
+                            SaveBitmap(pathMod, BitmapPixels);
+                        }
                         break;
                     case "5":
+                        Sfocatura(BitmapPixels);
+                        SaveBitmap(pathMod, BitmapPixels);
                         break;
                     case "6":
+                        Console.Clear();
+                        Console.WriteLine("Percentuale di rosso: ");
+                        redPerc = int.Parse(Console.ReadLine());
+                        Console.WriteLine("Percentuale di verde: ");
+                        greenPerc = int.Parse(Console.ReadLine());
+                        Console.WriteLine("Percentuale di blu: ");
+                        bluePerc = int.Parse(Console.ReadLine());
+                        ending = CreaGradienteOrizzontaleNero(redPerc, greenPerc, bluePerc, BitmapPixels);
+                        if (!ending)
+                        {
+                            Console.WriteLine("Percentuali non valide");
+                        }
+                        else
+                        {
+                            SaveBitmap(pathMod, BitmapPixels);
+                        }
                         break;
                     case "7":
+                        Console.Clear();
+                        Console.WriteLine("Percentuale di rosso: ");
+                        redPerc = int.Parse(Console.ReadLine());
+                        Console.WriteLine("Percentuale di verde: ");
+                        greenPerc = int.Parse(Console.ReadLine());
+                        Console.WriteLine("Percentuale di blu: ");
+                        bluePerc = int.Parse(Console.ReadLine());
+                        ending = CreaGradienteVerticaleBianco(redPerc, greenPerc, bluePerc, BitmapPixels);
+                        if (!ending)
+                        {
+                            Console.WriteLine("Percentuali non valide");
+                        }
+                        else
+                        {
+                            SaveBitmap(pathMod, BitmapPixels);
+                        }
                         break;
                     case "8":
+                        Console.Clear();
+                        Console.WriteLine("Percentuale di rosso: ");
+                        redPerc = int.Parse(Console.ReadLine());
+                        Console.WriteLine("Percentuale di verde: ");
+                        greenPerc = int.Parse(Console.ReadLine());
+                        Console.WriteLine("Percentuale di blu: ");
+                        bluePerc = int.Parse(Console.ReadLine());
+                        ending = CreaGradienteDiagonale(redPerc, greenPerc, bluePerc, BitmapPixels);
+                        if (!ending)
+                        {
+                            Console.WriteLine("Percentuali non valide");
+                        }
+                        else
+                        {
+                            SaveBitmap(pathMod, BitmapPixels);
+                        }
                         break;
                     case "9":
+                        //Contorno();
                         break;
                     case "10":
+                        Console.Clear();
+                        Console.WriteLine("Indice moltplicatore k (0 <= k <= 2): ");
+                        multiplier = float.Parse(Console.ReadLine());
+                        ending = Contrasto(multiplier, BitmapPixels);
+                        if (!ending)
+                        {
+                            Console.WriteLine("Valore dell'indice non consentito");
+                        }
+                        else
+                        {
+                            SaveBitmap(pathMod, BitmapPixels);
+                        }
                         break;
                     case "11":
+                        SpecchiaOrizzontale(BitmapPixels);
+                        SaveBitmap(pathMod, BitmapPixels);
                         break;
                     case "12":
+                        SpecchiaVerticale(BitmapPixels);
+                        SaveBitmap(pathMod, BitmapPixels);
                         break;
                     case "13":
+                        Ruota180(BitmapPixels);
+                        SaveBitmap(pathMod, BitmapPixels);
                         break;
                     case "14":
+                        //Merge();
                         break;
                     case "15":
                         continua = true;
                         break;
+                    default:
+                        Console.WriteLine("Opzione non valida");
+                        break;
                 }
+                if (continua == false)
+                {
+                    Console.WriteLine("Premere un tasto per continuare: ");
+                    Console.ReadKey();
+                }
+                Console.Clear();
             } while (!continua);
         }
-        public static Color[][] LoadBitmapPixels(string filePath, ref int width, ref int height, ref int pixelOffset, ref int rowSize)
+        public static Color[][] LoadBitmapPixels(string filePath)
         {
             const int BitmapFileHeaderSize = 14;                                //definizione della costante BitmapFileHeaderSize (14)
             const int BitmapInfoHeaderSize = 40;                                //definizione della costante BitmapInfoHeaderSize (40)
@@ -65,10 +186,10 @@ namespace bitmap_mod
 
                 byte[] bitmapInfoHeader = new byte[BitmapInfoHeaderSize];       //dichiarazione di bitmapInfoHeader, matrice (monodimensionale) di byte contenete l'InfoHeader del BMP
                 stream.Read(bitmapInfoHeader, 0, BitmapInfoHeaderSize);         //lettura dell'InfoHeader e salvataggio nella matrice bitmapInfoHeader
-                width = BitConverter.ToInt32(bitmapInfoHeader, 4);          //dichiarazione e inizializzazione della variabile width, con valore di larghezza del BMP
-                height = BitConverter.ToInt32(bitmapInfoHeader, 8);         //dichiarazione e inizializzazione della variabile height, con valore di altezza del BMP
-                pixelOffset = BitConverter.ToInt32(bitmapFileHeader, 10);   //dichiarazione e inizializzazione della variabile pixelOffSet, con valore di offset del BMP
-                rowSize = ((width * 24 + 31) / 32) * 4;                     //dichiarazione e inizializzazione della variabile rowsize, contenente il numero di righe (compresi i bytes di padding)
+                int width = BitConverter.ToInt32(bitmapInfoHeader, 4);          //dichiarazione e inizializzazione della variabile width, con valore di larghezza del BMP
+                int height = BitConverter.ToInt32(bitmapInfoHeader, 8);         //dichiarazione e inizializzazione della variabile height, con valore di altezza del BMP
+                int pixelOffset = BitConverter.ToInt32(bitmapFileHeader, 10);   //dichiarazione e inizializzazione della variabile pixelOffSet, con valore di offset del BMP
+                int rowSize = ((width * 24 + 31) / 32) * 4;                     //dichiarazione e inizializzazione della variabile rowsize, contenente il numero di righe (compresi i bytes di padding)
                 Color[][] pixels = new Color[height][];                         //dichiarazione della matrice pixels per contenere i colori dei pixel del BMP
                 for (int row = 0; row < height; row++)
                 {
@@ -119,11 +240,11 @@ namespace bitmap_mod
             using (FileStream stream = new FileStream(fileName, FileMode.Create))
             {
                 stream.Write(header, 0, header.Length);
-                for (int y = height - 1; y >= 0; y--)
+                for (int i = height - 1; i >= 0; i--)
                 {
-                    for (int x = 0; x < width; x++)
+                    for (int j = 0; j < width; j++)
                     {
-                        Color color = pixels[y][x];
+                        Color color = pixels[i][j];
                         byte[] colorData = new byte[] { color.B, color.G, color.R };
                         stream.Write(colorData, 0, 3);
                     }
@@ -133,61 +254,428 @@ namespace bitmap_mod
             }
         }
         #region funzioni di modifica
-        static void BiancoNero(Color[][] pixels, ref int width, ref int height)
+        static void BiancoNero(Color[][] pixels)
+        {
+            int len = pixels.Length;
+            for (int i = 0; i < len; i++)
+            {
+                for (int j = 0; j < pixels[i].Length; j++)
+                {
+                    int red = pixels[i][j].R;
+                    int green = pixels[i][j].G;
+                    int blue = pixels[i][j].B;
+                    int avg = (red * 50 + green * 25 + blue * 75) / (50 + 25 + 75);
+                    pixels[i][j] = Color.FromArgb(avg, avg, avg);
+                }
+            }
+        }
+        static bool BiancoNeroPerc(int PR, int PG, int PB, Color[][] pixels)
+        {
+            bool ending = false;
+            if (PR >= 0  && PG >= 0 && PB >= 0 && PR <= 255 && PG <= 255 && PB <= 255)
+            {
+                int len = pixels.Length;
+                for (int i = 0; i < len; i++)
+                {
+                    for (int j = 0; j < pixels[i].Length; j++)
+                    {
+                        int red = pixels[i][j].R;
+                        int green = pixels[i][j].G;
+                        int blue = pixels[i][j].B;
+                        int avg = (red * PR + green * PG + blue * PB) / (PR + PG + PB);
+                        pixels[i][j] = Color.FromArgb(avg, avg, avg);
+                        ending = true;
+                    }
+                }
+            }
+            return ending;
+        }
+        static bool ChiaroScuro(int k, Color[][] pixels)
+        {
+            bool ending = false;
+            if (k <= 255 && k >= -255)
+            {
+                int len = pixels.Length;
+                for (int i = 0; i < len; i++)
+                {
+                    for (int j = 0; j < pixels[i].Length; j++)
+                    {
+                        int red = pixels[i][j].R + k;
+                        if (red + k < 0)
+                        {
+                            red = 0;
+                        }
+                        else if (red > 255)
+                        {
+                            red = 255;
+                        }
+                        int green = pixels[i][j].G + k;
+                        if (green < 0)
+                        {
+                            green = 0;
+                        }
+                        else if (green > 255)
+                        {
+                            green = 255;
+                        }
+                        int blue = pixels[i][j].B + k;
+                        if (blue < 0)
+                        {
+                            blue = 0;
+                        }
+                        else if (blue > 255)
+                        {
+                            blue = 255;
+                        }
+                        pixels[i][j] = Color.FromArgb(red, green, blue);
+                    }
+                }
+                ending = true;
+            }
+            return ending;
+        }
+        static bool ChiaroScuroMult(float k, Color[][] pixels)
+        {
+            bool ending = false;
+            if (k <= 2 && k >= 0)
+            {
+                int len = pixels.Length;
+                for (int i = 0; i < len; i++)
+                {
+                    for (int j = 0; j < pixels[i].Length; j++)
+                    {
+                        float red = pixels[i][j].R * k;
+                        if (red * k > 255)
+                        {
+                            red = 255;
+                        }
+                        float green = pixels[i][j].G * k;
+                        if (green * k > 255)
+                        {
+                            green = 255;
+                        }
+                        float blue = pixels[i][j].B * k;
+                        if (blue > 255)
+                        {
+                            blue = 255;
+                        }
+                        pixels[i][j] = Color.FromArgb(Convert.ToInt32(red), Convert.ToInt32(green), Convert.ToInt32(blue));
+                    }
+                }
+                ending = true;
+            }
+            return ending;
+        }
+        static void Sfocatura(Color[][] pixels)
+        {
+            Color[][] modified = pixels;
+            for (int i = 1; i < pixels.Length; i++)
+            {
+                for (int j = 1; j < pixels[0].Length; j++)
+                {
+                    int avgR = 0, avgG = 0, avgB = 0;
+                    if (i > 0 && i < pixels.Length - 1)
+                    {
+                        if (j > 0 && j < pixels[0].Length - 1)
+                        {
+                            avgR = (modified[i - 1][j - 1].R + modified[i][j - 1].R + modified[i + 1][j - 1].R + modified[i - 1][j].R + modified[i + 1][j].R + modified[i - 1][j + 1].R + modified[i][j + 1].R + modified[i + 1][j + 1].R) / 8;
+                            avgG = (modified[i - 1][j - 1].G + modified[i][j - 1].G + modified[i + 1][j - 1].G + modified[i - 1][j].G + modified[i + 1][j].G + modified[i - 1][j + 1].G + modified[i][j + 1].G + modified[i + 1][j + 1].G) / 8;
+                            avgB = (modified[i - 1][j - 1].B + modified[i][j - 1].B + modified[i + 1][j - 1].B + modified[i - 1][j].B + modified[i + 1][j].B + modified[i - 1][j + 1].B + modified[i][j + 1].B + modified[i + 1][j + 1].B) / 8;
+                        }
+                        if (j == 0)
+                        {
+                            avgR = (modified[i - 1][j].R + modified[i + 1][j].R + modified[i - 1][j + 1].R + modified[i][j + 1].R + modified[i + 1][j + 1].R) / 5;
+                            avgG = (modified[i - 1][j].G + modified[i + 1][j].G + modified[i - 1][j + 1].G + modified[i][j + 1].G + modified[i + 1][j + 1].G) / 5;
+                            avgB = (modified[i- 1][j].B + modified[i + 1][j].B + modified[i - 1][j + 1].B + modified[i][j + 1].B + modified[i+ 1][j + 1].B) / 5;
+                        }
+                        if (j == pixels[0].Length - 1)
+                        {
+                            avgR = (modified[i - 1][j - 1].R + modified[i][j - 1].R + modified[i + 1][j - 1].R + modified[i - 1][j].R + modified[i + 1][j].R) / 5;
+                            avgG = (modified[i - 1][j - 1].G + modified[i][j - 1].G + modified[i + 1][j - 1].G + modified[i - 1][j].G + modified[i + 1][j].G) / 5;
+                            avgB = (modified[i - 1][j - 1].B + modified[i][j - 1].B + modified[i + 1][j - 1].B + modified[i - 1][j].B + modified[i + 1][j].B) / 5;
+                        }
+                    }
+                    if (i== 0)
+                    {
+                        if (j > 0 && j < pixels[0].Length - 1)
+                        {
+                            avgR = (modified[i][j - 1].R + modified[i + 1][j - 1].R + modified[i + 1][j].R + modified[i][j + 1].R + modified[i + 1][j + 1].R) / 5;
+                            avgG = (modified[i][j - 1].G + modified[i + 1][j - 1].G + modified[i + 1][j].G + modified[i][j + 1].G + modified[i + 1][j + 1].G) / 5;
+                            avgB = (modified[i][j - 1].B + modified[i + 1][j - 1].B + modified[i + 1][j].B + modified[i][j + 1].B + modified[i + 1][j + 1].B) / 5;
+                        }
+                        if (j == 0)
+                        {
+                            avgR = (modified[i+ 1][j].R + modified[i][j + 1].R + modified[i + 1][j + 1].R) / 3;
+                            avgG = (modified[i + 1][j].G + modified[i][j + 1].G + modified[i + 1][j + 1].G) / 3;
+                            avgB = (modified[i+ 1][j].B + modified[i][j + 1].B + modified[i + 1][j + 1].B) / 3;
+                        }
+                        if (j == pixels[0].Length - 1)
+                        {
+                            avgR = (modified[i][j - 1].R + modified[i + 1][j - 1].R + modified[i + 1][j].R) / 3;
+                            avgG = (modified[i][j - 1].G + modified[i + 1][j - 1].G + modified[i + 1][j].G) / 3;
+                            avgB = (modified[i][j - 1].B + modified[i + 1][j - 1].B + modified[i + 1][j].B) / 3;
+                        }
+                    }
+                    if (i== pixels.Length - 1)
+                    {
+                        if (j > 0 && j < pixels[0].Length - 1)
+                        {
+                            avgR = (modified[i - 1][j - 1].R + modified[i][j - 1].R + modified[i - 1][j].R + modified[i - 1][j + 1].R + modified[i][j + 1].R) / 5;
+                            avgG = (modified[i - 1][j - 1].G + modified[i][j - 1].G + modified[i - 1][j].G + modified[i - 1][j + 1].G + modified[i][j + 1].G) / 5;
+                            avgB = (modified[i - 1][j - 1].B + modified[i][j - 1].B + modified[i - 1][j].B + modified[i - 1][j + 1].B + modified[i][j + 1].B) / 5;
+                        }
+                        if (j == 0)
+                        {
+                            avgR = (modified[i - 1][j].R + modified[i - 1][j + 1].R + modified[i][j + 1].R) / 3;
+                            avgG = (modified[i - 1][j].G + modified[i - 1][j + 1].G + modified[i][j + 1].G) / 3;
+                            avgB = (modified[i - 1][j].B + modified[i - 1][j + 1].B + modified[i][j + 1].B) / 3;
+                        }
+                        if (j == pixels[0].Length - 1)
+                        {
+                            avgR = (modified[i - 1][j - 1].R + modified[i][j - 1].R + modified[i - 1][j].R) / 3;
+                            avgG = (modified[i - 1][j - 1].G + modified[i][j - 1].G + modified[i - 1][j].G) / 3;
+                            avgB = (modified[i - 1][j - 1].B + modified[i][j - 1].B + modified[i - 1][j].B) / 3;
+                        }
+                    }
+                    pixels[i][j] = Color.FromArgb(avgR, avgG, avgB);
+                }
+            }
+        }
+        static bool CreaGradienteOrizzontaleNero(int R, int G, int B, Color[][] pixels)
+        {
+            bool ending = false;
+            if (R >= 0 && G >= 0 && B >= 0 && R <= 255 && G <= 255 && B <= 255)
+            {
+                int len = pixels.Length;
+                for (int i = 0; i < len; i++)
+                {
+                    for (float j = 0; j < pixels[i].Length; j++)
+                    {
+                        int k = Convert.ToInt32(j);
+                        float red = pixels[i][k].R;
+                        red += (j / pixels[i].Length) * (R - red);
+                        if (red > 255)
+                        {
+                            red = 255;
+                        }
+                        if (red < 0)
+                        {
+                            red = 0;
+                        }
+                        float green = pixels[i][k].G;
+                        green += (j / pixels[i].Length) * (G - green);
+                        if (green > 255)
+                        {
+                            green = 255;
+                        }
+                        if (green < 0)
+                        {
+                            green = 0;
+                        }
+                        float blue = pixels[i][k].B;
+                        blue += (j / pixels[i].Length) * (B - blue);
+                        if (blue> 255)
+                        {
+                            blue= 255;
+                        }
+                        if (blue< 0)
+                        {
+                            blue= 0;
+                        }
+                        pixels[i][k] = Color.FromArgb(Convert.ToInt32(red), Convert.ToInt32(green), Convert.ToInt32(blue));
+                    }
+                }
+                ending = true;
+            }
+            return ending;
+        }
+        static bool CreaGradienteVerticaleBianco(int R, int G, int B, Color[][] pixels)
+        {
+            bool ending = false;
+            if (R >= 0 && G >= 0 && B >= 0 && R <= 255 && G <= 255 && B <= 255)
+            {
+                int len = pixels.Length;
+                for (float i = 0; i < len; i++)
+                {
+                    for (int j = 0; j < pixels[0].Length; j++)
+                    {
+                        int k = Convert.ToInt32(i);
+                        float red = pixels[k][j].R;
+                        red += (i / pixels.Length) * (R - red);
+                        if (red > 255)
+                        {
+                            red = 255;
+                        }
+                        if (red < 0)
+                        {
+                            red = 0;
+                        }
+                        float green = pixels[k][j].G;
+                        green += (i / pixels.Length) * (G - green);
+                        if (green > 255)
+                        {
+                            green = 255;
+                        }
+                        if (green < 0)
+                        {
+                            green = 0;
+                        }
+                        float blue = pixels[k][j].B;
+                        blue += (i / pixels.Length) * (B - blue);
+                        if (blue > 255)
+                        {
+                            blue = 255;
+                        }
+                        if (blue < 0)
+                        {
+                            blue = 0;
+                        }
+                        pixels[k][j] = Color.FromArgb(Convert.ToInt32(red), Convert.ToInt32(green), Convert.ToInt32(blue));
+                    }
+                }
+                ending = true;
+            }
+            return ending;
+        }
+        static bool CreaGradienteDiagonale(int R, int G, int B, Color[][] pixels)
+        {
+            bool ending = false;
+            if (R >= 0 && G >= 0 && B >= 0 && R <= 255 && G <= 255 && B <= 255) 
+            {
+                int len = pixels.Length;
+                for (float i = 0; i < len; i++)
+                {
+                    for (float j = 0; j < pixels[0].Length; j++)
+                    {
+                        int k = Convert.ToInt32(i), l = Convert.ToInt32(j);
+                        float red = pixels[k][l].R;
+                        red += (j + i) / (pixels[0].Length + pixels.Length) * (R - red);
+                        if (red > 255)
+                        {
+                            red = 255;
+                        }
+                        if (red < 0)
+                        {
+                            red = 0;
+                        }
+                        float green = pixels[k][l].G;
+                        green += (j + i) / (pixels[0].Length + pixels.Length) * (G - green);
+                        if (green > 255)
+                        {
+                            green = 255;
+                        }
+                        if (green < 0)
+                        {
+                            green = 0;
+                        }
+
+                        float blue = pixels[k][l].B;
+                        blue += (j + i) / (pixels[0].Length + pixels.Length) * (B - blue);
+                        if (blue > 255)
+                        {
+                            blue = 255;
+                        }
+                        if (blue < 0)
+                        {
+                            blue = 0;
+                        }
+                        pixels[k][l] = Color.FromArgb(Convert.ToInt32(red), Convert.ToInt32(green), Convert.ToInt32(blue));
+                        ending = true;
+                    }
+                }
+            }
+            return ending;
+        }
+        static void Contorno(int sogliaNero, int sogliaGrigio, Color[][] pixels)
         {
 
         }
-        static void BiancoNero(int PR, int PG, int PB)
+        static bool Contrasto(float k, Color[][] pixels)
         {
-
+            bool ending = false;
+            if (k <= 2 && k >= 0)
+            {
+                int len = pixels.Length;
+                for (int i = 0; i < len; i++)
+                {
+                    for (int j = 0; j < pixels[i].Length; j++)
+                    {
+                        float red = pixels[i][j].R;
+                        if (red > 127)
+                        {
+                            red *= k;
+                        }
+                        else
+                        {
+                            red /= k;
+                        }
+                        if (red > 255)
+                        {
+                            red = 255;
+                        }
+                        float green = pixels[i][j].G;
+                        if (green > 127)
+                        {
+                            green *= k;
+                        }
+                        else
+                        {
+                            green /= k;
+                        }
+                        if (green > 255)
+                        {
+                            green = 255;
+                        }
+                        float blue = pixels[i][j].G;
+                        if (blue > 127)
+                        {
+                            blue *= k;
+                        }
+                        else
+                        {
+                            blue /= k;
+                        }
+                        if (blue > 255)
+                        {
+                            blue = 255;
+                        }
+                        pixels[i][j] = Color.FromArgb(Convert.ToInt32(red), Convert.ToInt32(green), Convert.ToInt32(blue));
+                    }
+                }
+                ending = true;
+            }
+            return ending;
         }
-        static void ChiaroScuro(int k)
+        static void SpecchiaOrizzontale(Color[][] pixels)
         {
-
+            int len = pixels.Length;
+            for (int i = 0; i < len; i++)
+            {
+                for (int j = 0; j < pixels[i].Length / 2; j++)
+                {
+                    (pixels[i][j], pixels[i][pixels[i].Length - j - 1]) = (pixels[i][pixels[i].Length - j - 1], pixels[i][j]);
+                }
+            }
         }
-        static void ChiaroScruro(float k)
+        static void SpecchiaVerticale(Color[][] pixels)
         {
-
+            int len = pixels.Length;
+            for (int i = 0; i < len / 2; i++)
+            {
+                for (int j = 0; j < pixels[i].Length; j++)
+                {
+                    (pixels[len - i - 1][j], pixels[i][j]) = (pixels[i][j], pixels[len - i - 1][j]);
+                }
+            }
         }
-        static void Sfocatura()
+        static void Ruota180(Color[][] pixels)
         {
-
+            SpecchiaOrizzontale((Color[][]) pixels);
+            SpecchiaVerticale((Color[][]) pixels);
         }
-        static void CreaGradienteOrizzontaleNero(int R, int G, int B)
+        static bool Merge(Color[][] M, int percM, Color[][] M1, int percM1)
         {
-
-        }
-        static void CreaGradienteVerticaleBianco(int R, int G, int B)
-        {
-
-        }
-        static void CreaGradienteDiagonale(int R1, int G1, int B1, int R2, int G2, int B2)
-        {
-
-        }
-        static void Contorno(int sogliaNero, int sogliaGrigio)
-        {
-
-        }
-        static void Contrasto(float k)
-        {
-
-        }
-        static void SpecchiaOrizzontale()
-        {
-
-        }
-        static void SpecchiaVerticale()
-        {
-
-        }
-        static void ruota180()
-        {
-
-        }
-        static void merge(Color[][] M, int percM, Color[][] M1, int percM1)
-        {
-
+            return false;
         }
         #endregion
     }
