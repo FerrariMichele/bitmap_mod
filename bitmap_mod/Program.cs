@@ -129,7 +129,20 @@ namespace bitmap_mod
                         }
                         break;
                     case "9":
-                        //Contorno();
+                        Console.Clear();
+                        Console.WriteLine("Soglia di nero N (0 < N < 255): ");
+                        int black = int.Parse(Console.ReadLine());
+                        Console.WriteLine("Soglia di grigio G (0 < G < N): ");
+                        int grey = int.Parse(Console.ReadLine());
+                        ending = Contorno(black, grey, BitmapPixels);
+                        if (!ending)
+                        {
+                            Console.WriteLine("Soglie non valide");
+                        }
+                        else
+                        {
+                            SaveBitmap(pathMod, BitmapPixels);
+                        };
                         break;
                     case "10":
                         Console.Clear();
@@ -598,9 +611,24 @@ namespace bitmap_mod
             }
             return ending;
         }
-        static void Contorno(int sogliaNero, int sogliaGrigio, Color[][] pixels)
+        static bool Contorno(int sogliaNero, int sogliaGrigio, Color[][] pixels)
         {
-
+            bool ending = false;
+            if (sogliaNero <= 255 && sogliaNero > sogliaGrigio && sogliaGrigio >= 0)
+            {
+                Color[][] modified = pixels;
+                int red = 0, green = 0, blue = 0;
+                for (int i = 1; i < pixels.Length; i++)
+                {
+                    for (int j = 1; j < pixels[0].Length; j++)
+                    {
+                        
+                        pixels[i][j] = Color.FromArgb(red, green, blue);
+                    }
+                }
+                ending = true;
+            }
+            return ending;
         }
         static bool Contrasto(float k, Color[][] pixels)
         {
