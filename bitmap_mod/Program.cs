@@ -11,7 +11,7 @@ namespace bitmap_mod
             bool continua = false, ending;
             int redPerc, greenPerc, bluePerc;
             float multiplier;
-            string path = @"rio.bmp", pathMod = @"rioMOD.bmp";
+            string path = @"rio.bmp", path2 = @"mesi.bmp", pathMod = @"rioMOD.bmp";
             Color[][] BitmapPixels;
             BitmapPixels = LoadBitmapPixels(path);
             do
@@ -158,7 +158,19 @@ namespace bitmap_mod
                         SaveBitmap(pathMod, BitmapPixels);
                         break;
                     case "14":
-                        //Merge();
+                        Console.Clear();
+                        Console.WriteLine("Percentuale opacità k della prima foto: (0 <= k <= 100): ");
+                        int perc = int.Parse(Console.ReadLine());
+                        Color[][] BitmapPixels2 = LoadBitmapPixels(path2);
+                        ending = Merge(BitmapPixels, BitmapPixels2, perc);
+                        if (!ending)
+                        {
+                            Console.WriteLine("Percentuale non valida");
+                        }
+                        else
+                        {
+                            SaveBitmap(pathMod, BitmapPixels);
+                        }
                         break;
                     case "15":
                         continua = true;
@@ -670,12 +682,32 @@ namespace bitmap_mod
         }
         static void Ruota180(Color[][] pixels)
         {
-            SpecchiaOrizzontale((Color[][]) pixels);
-            SpecchiaVerticale((Color[][]) pixels);
+            SpecchiaOrizzontale(pixels);
+            SpecchiaVerticale(pixels);
         }
-        static bool Merge(Color[][] M, int percM, Color[][] M1, int percM1)
+        static bool Merge(Color[][] M, Color[][] M1, int percM)
         {
-            return false;
+            bool ending = false;
+            if (percM >= 0 && percM <= 100)
+            {
+                int len = M.Length;
+                int percM1 = 100 - percM;
+                for (int i = 0; i < len; i++)
+                {
+                    for (int j = 0; j < M[0].Length; j++)
+                    {
+                        float redM = M[i][j].R, redM1 = M1[i][j].R;
+                        redM = (redM * percM + redM1 * percM1)/100;
+                        float greenM = M[i][j].G, greenM1 = M1[i][j].G;
+                        greenM = (greenM * percM + greenM1 * percM1) / 100;
+                        float blueM = M[i][j].B, blueM1 = M1[i][j].G;
+                        blueM = (blueM * percM + blueM1 * percM1) / 100;
+                        M[i][j] = Color.FromArgb(Convert.ToInt32(redM), Convert.ToInt32(greenM), Convert.ToInt32(blueM));
+                    }
+                }
+                ending = true;
+            }
+            return ending;
         }
         #endregion
     }
