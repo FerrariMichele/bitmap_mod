@@ -33,7 +33,7 @@ namespace bitmap_mod
                         Console.WriteLine("Percentuale di blu: ");
                         bluePerc = int.Parse(Console.ReadLine());
                         ending = BiancoNeroPerc(redPerc, greenPerc, bluePerc, BitmapPixels);
-                        if (!ending) 
+                        if (!ending)
                         {
                             Console.WriteLine("Percentuali non valide");
                         }
@@ -43,7 +43,7 @@ namespace bitmap_mod
                         }
                         break;
                     case "3":
-                        Console.Clear(); 
+                        Console.Clear();
                         Console.WriteLine("Indice di schiarimento k (-255 < k < 255): ");
                         int index = int.Parse(Console.ReadLine());
                         ending = ChiaroScuro(index, BitmapPixels);
@@ -132,7 +132,7 @@ namespace bitmap_mod
                         Console.Clear();
                         Console.WriteLine("Soglia di nero N (0 < N < 255): ");
                         int black = int.Parse(Console.ReadLine());
-                        Console.WriteLine("Soglia di grigio G (0 < G < N): ");
+                        Console.WriteLine("Soglia di grigio G (N < G < 255): ");
                         int grey = int.Parse(Console.ReadLine());
                         ending = Contorno(black, grey, BitmapPixels);
                         if (!ending)
@@ -297,7 +297,7 @@ namespace bitmap_mod
         static bool BiancoNeroPerc(int PR, int PG, int PB, Color[][] pixels)
         {
             bool ending = false;
-            if (PR >= 0  && PG >= 0 && PB >= 0 && PR <= 255 && PG <= 255 && PB <= 255)
+            if (PR >= 0 && PG >= 0 && PB >= 0 && PR <= 255 && PG <= 255 && PB <= 255)
             {
                 int len = pixels.Length;
                 for (int i = 0; i < len; i++)
@@ -394,9 +394,9 @@ namespace bitmap_mod
         static void Sfocatura(Color[][] pixels)
         {
             Color[][] modified = pixels;
-            for (int i = 1; i < pixels.Length; i++)
+            for (int i = 0; i < pixels.Length; i++)
             {
-                for (int j = 1; j < pixels[0].Length; j++)
+                for (int j = 0; j < pixels[0].Length; j++)
                 {
                     int avgR = 0, avgG = 0, avgB = 0;
                     if (i > 0 && i < pixels.Length - 1)
@@ -411,7 +411,7 @@ namespace bitmap_mod
                         {
                             avgR = (modified[i - 1][j].R + modified[i + 1][j].R + modified[i - 1][j + 1].R + modified[i][j + 1].R + modified[i + 1][j + 1].R) / 5;
                             avgG = (modified[i - 1][j].G + modified[i + 1][j].G + modified[i - 1][j + 1].G + modified[i][j + 1].G + modified[i + 1][j + 1].G) / 5;
-                            avgB = (modified[i- 1][j].B + modified[i + 1][j].B + modified[i - 1][j + 1].B + modified[i][j + 1].B + modified[i+ 1][j + 1].B) / 5;
+                            avgB = (modified[i - 1][j].B + modified[i + 1][j].B + modified[i - 1][j + 1].B + modified[i][j + 1].B + modified[i + 1][j + 1].B) / 5;
                         }
                         if (j == pixels[0].Length - 1)
                         {
@@ -420,7 +420,7 @@ namespace bitmap_mod
                             avgB = (modified[i - 1][j - 1].B + modified[i][j - 1].B + modified[i + 1][j - 1].B + modified[i - 1][j].B + modified[i + 1][j].B) / 5;
                         }
                     }
-                    if (i== 0)
+                    if (i == 0)
                     {
                         if (j > 0 && j < pixels[0].Length - 1)
                         {
@@ -430,9 +430,9 @@ namespace bitmap_mod
                         }
                         if (j == 0)
                         {
-                            avgR = (modified[i+ 1][j].R + modified[i][j + 1].R + modified[i + 1][j + 1].R) / 3;
+                            avgR = (modified[i + 1][j].R + modified[i][j + 1].R + modified[i + 1][j + 1].R) / 3;
                             avgG = (modified[i + 1][j].G + modified[i][j + 1].G + modified[i + 1][j + 1].G) / 3;
-                            avgB = (modified[i+ 1][j].B + modified[i][j + 1].B + modified[i + 1][j + 1].B) / 3;
+                            avgB = (modified[i + 1][j].B + modified[i][j + 1].B + modified[i + 1][j + 1].B) / 3;
                         }
                         if (j == pixels[0].Length - 1)
                         {
@@ -441,7 +441,7 @@ namespace bitmap_mod
                             avgB = (modified[i][j - 1].B + modified[i + 1][j - 1].B + modified[i + 1][j].B) / 3;
                         }
                     }
-                    if (i== pixels.Length - 1)
+                    if (i == pixels.Length - 1)
                     {
                         if (j > 0 && j < pixels[0].Length - 1)
                         {
@@ -478,7 +478,7 @@ namespace bitmap_mod
                     {
                         int k = Convert.ToInt32(j);
                         float red = pixels[i][k].R;
-                        red += (j / pixels[i].Length) * (R - red);
+                        red = ((pixels[i].Length - j) / pixels[i].Length) * R;
                         if (red > 255)
                         {
                             red = 255;
@@ -488,7 +488,7 @@ namespace bitmap_mod
                             red = 0;
                         }
                         float green = pixels[i][k].G;
-                        green += (j / pixels[i].Length) * (G - green);
+                        green = ((pixels[i].Length - j) / pixels[i].Length) * G;
                         if (green > 255)
                         {
                             green = 255;
@@ -498,14 +498,14 @@ namespace bitmap_mod
                             green = 0;
                         }
                         float blue = pixels[i][k].B;
-                        blue += (j / pixels[i].Length) * (B - blue);
-                        if (blue> 255)
+                        blue = ((pixels[i].Length - j) / pixels[i].Length) * B;
+                        if (blue > 255)
                         {
-                            blue= 255;
+                            blue = 255;
                         }
-                        if (blue< 0)
+                        if (blue < 0)
                         {
-                            blue= 0;
+                            blue = 0;
                         }
                         pixels[i][k] = Color.FromArgb(Convert.ToInt32(red), Convert.ToInt32(green), Convert.ToInt32(blue));
                     }
@@ -526,7 +526,7 @@ namespace bitmap_mod
                     {
                         int k = Convert.ToInt32(i);
                         float red = pixels[k][j].R;
-                        red += (i / pixels.Length) * (R - red);
+                        red = ((pixels.Length - i) / pixels.Length) * (255 - R) + R;
                         if (red > 255)
                         {
                             red = 255;
@@ -536,7 +536,7 @@ namespace bitmap_mod
                             red = 0;
                         }
                         float green = pixels[k][j].G;
-                        green += (i / pixels.Length) * (G - green);
+                        green = ((pixels.Length - i) / pixels.Length) * (255 - G) + G;
                         if (green > 255)
                         {
                             green = 255;
@@ -546,7 +546,7 @@ namespace bitmap_mod
                             green = 0;
                         }
                         float blue = pixels[k][j].B;
-                        blue += (i / pixels.Length) * (B - blue);
+                        blue = ((pixels.Length - i) / pixels.Length) * (255 - B) + B;
                         if (blue > 255)
                         {
                             blue = 255;
@@ -565,7 +565,7 @@ namespace bitmap_mod
         static bool CreaGradienteDiagonale(int R, int G, int B, Color[][] pixels)
         {
             bool ending = false;
-            if (R >= 0 && G >= 0 && B >= 0 && R <= 255 && G <= 255 && B <= 255) 
+            if (R >= 0 && G >= 0 && B >= 0 && R <= 255 && G <= 255 && B <= 255)
             {
                 int len = pixels.Length;
                 for (float i = 0; i < len; i++)
@@ -574,7 +574,7 @@ namespace bitmap_mod
                     {
                         int k = Convert.ToInt32(i), l = Convert.ToInt32(j);
                         float red = pixels[k][l].R;
-                        red += (j + i) / (pixels[0].Length + pixels.Length) * (R - red);
+                        red += ((pixels[0].Length + pixels.Length) - (j + i)) / (pixels[0].Length + pixels.Length) * (R - red);
                         if (red > 255)
                         {
                             red = 255;
@@ -584,7 +584,7 @@ namespace bitmap_mod
                             red = 0;
                         }
                         float green = pixels[k][l].G;
-                        green += (j + i) / (pixels[0].Length + pixels.Length) * (G - green);
+                        green += ((pixels[0].Length + pixels.Length) - (j + i)) / (pixels[0].Length + pixels.Length) * (G - green);
                         if (green > 255)
                         {
                             green = 255;
@@ -595,7 +595,7 @@ namespace bitmap_mod
                         }
 
                         float blue = pixels[k][l].B;
-                        blue += (j + i) / (pixels[0].Length + pixels.Length) * (B - blue);
+                        blue += ((pixels[0].Length + pixels.Length) - (j + i)) / (pixels[0].Length + pixels.Length) * (B - blue);
                         if (blue > 255)
                         {
                             blue = 255;
@@ -614,15 +614,38 @@ namespace bitmap_mod
         static bool Contorno(int sogliaNero, int sogliaGrigio, Color[][] pixels)
         {
             bool ending = false;
-            if (sogliaNero <= 255 && sogliaNero > sogliaGrigio && sogliaGrigio >= 0)
+            if (sogliaNero >= 0 && sogliaNero < sogliaGrigio && sogliaGrigio <= 255)
             {
                 Color[][] modified = pixels;
-                int red = 0, green = 0, blue = 0;
-                for (int i = 1; i < pixels.Length; i++)
+                for (int i = 0; i < pixels.Length; i++)
                 {
-                    for (int j = 1; j < pixels[0].Length; j++)
+                    for (int j = 0; j < pixels[0].Length; j++)
                     {
-                        
+                        int red = pixels[i][j].R;
+                        int green = pixels[i][j].G;
+                        int blue = pixels[i][j].B;
+                        if (red < sogliaGrigio && green < sogliaGrigio && blue < sogliaGrigio)
+                        {
+                            int media = (red + green + blue) / 3;
+                            if (red < sogliaNero && green < sogliaNero && blue < sogliaNero)
+                            {
+                                red = media - sogliaNero;
+                                green = media - sogliaNero;
+                                blue = media - sogliaNero;
+                            }
+                            else
+                            {
+                                red = media - sogliaGrigio;
+                                green = media - sogliaGrigio;
+                                blue = media - sogliaGrigio;
+                            }
+                        }
+                        if (red < 0)
+                            red = 0;
+                        if (green < 0)
+                            green = 0;
+                        if (blue < 0)
+                            blue = 0;
                         pixels[i][j] = Color.FromArgb(red, green, blue);
                     }
                 }
